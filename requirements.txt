@@ -1,0 +1,11 @@
+bs4
+lxml
+openai
+flask_cors
+flask
+opencv-python
+sklearn
+Pillow
+requests
+tinycss2
+

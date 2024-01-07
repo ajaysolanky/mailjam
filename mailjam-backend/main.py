@@ -9,6 +9,7 @@ CORS(app)
 @app.route('/gettemplate', methods=['GET'])
 @cross_origin()
 def get_template():
+    import pdb; pdb.set_trace()
     data = request.args
     # query = data['query']
     url = data['url']

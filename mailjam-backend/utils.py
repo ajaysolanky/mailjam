@@ -1,28 +1,35 @@
 import os
-import openai
+from openai import OpenAI
 import requests
 import numpy as np
 from joblib import Memory
 
-openai.api_key = os.getenv('OPENAI_API_KEY', 'not the token')
+# openai.api_key = os.getenv('OPENAI_API_KEY', 'not the token')
 
 memory = Memory('./cachedir', verbose=0)
 
 np.random.seed(1)
 
 @memory.cache
-def openai_query(query):
-    MODEL = 'gpt-4'
+def openai_query(query, json_mode=False):
+    MODEL = 'gpt-4-1106-preview'
     TEMPERATURE = 0.0
-    completion = openai.ChatCompletion.create(
-        model=MODEL,
-        temperature = TEMPERATURE,
-        messages=[
-            {"role": "user", "content": query}
-        ]
-    )
 
-    return completion.choices[0].message['content']
+    client = OpenAI()
+    opt_dict = {
+        "model": MODEL,
+        "temperature": TEMPERATURE,
+        "messages": [
+            {"role": "user", "content": query}
+        ],
+    }
+
+    if json_mode:
+        opt_dict["response_format"] = {"type": "json_object"}
+
+    completion = client.chat.completions.create(**opt_dict)
+
+    return completion.choices[0].message.content
 
 @memory.cache
 def unsplash_search_query(query):

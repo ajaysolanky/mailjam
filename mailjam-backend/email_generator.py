@@ -91,13 +91,8 @@ USER QUERY:
 {user_query}
 """
         prompt = prompt_template.format(user_query = query)
-        openai_resp = self.query_openai_fn(prompt)
-        json_idx = 0
-        try:
-            json_idx = openai_resp.index('OUTPUT:') + len('OUTPUT:')
-        except:
-            pass
-        return json.loads(openai_resp[json_idx:])
+        openai_resp = self.query_openai_fn(prompt, json_mode=True)
+        return json.loads(openai_resp)
 
     def get_code_skeleton(self, email_info):
         prompt_template = """Give me the high level MJML framework for a marketing email for pet supplies. Just give the first-level mj-sections and pseudocode, don't fill anything in under those first-level "mj-section" tags.
@@ -312,7 +307,7 @@ OUTPUT JSON:
             brand_kit_json=brand_kit_json,
         )
 
-        nested_theme_dict = json.loads(self.query_openai_fn(prompt))
+        nested_theme_dict = json.loads(self.query_openai_fn(prompt, json_mode=True))
         flat_theme_dict = self.flatten_dict(nested_theme_dict)
         flat_theme_template = self.flatten_dict(theme_template)
         theme_map = {flat_theme_template[k]:flat_theme_dict[k] for k in flat_theme_template}
